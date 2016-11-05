@@ -3,10 +3,12 @@ Broadcast Giphy images to listeners using Socket.IO. This is just a prototype wr
 playing with Socket.IO and the Giphy API. To understand Socket.IO, the 'chat app' example provided on their web site is very
 helpful and similar to what is being done here.
 
+This is using Express.js with EJS for templating.
+
 # To install:
 1. Clone the repo
 2. npm install
-3. node app.js
+3. node index.js
 
 By default, the app listens on port 3000. Change if you'd like. 
 You can use something like 'forever' if you'd like to keep it running.
