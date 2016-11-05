@@ -1,0 +1,11 @@
+{
+  "name": "giphy-battle",
+  "version": "0.0.1",
+  "description": "may the best giphy win",
+  "dependencies": {
+    "ejs": "^2.5.2",
+    "express": "^4.10.2",
+    "request": "^2.78.0",
+    "socket.io": "^1.5.1"
+  }
+}
