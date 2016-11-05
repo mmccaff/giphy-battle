@@ -23,6 +23,7 @@
 	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 	<script>
 	  var socket = io();
+	  $("#m").focus();
 	  $('form').submit(function(){
 	    socket.emit('tag message', $('#m').val());
 	    $('#m').val('');
