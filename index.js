@@ -10,10 +10,12 @@ app.get('/', function(req, res){
 
 	var endpoint = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC";
 	
-	if (req.param['tag'])
+	if (req.param('tag'))
 	{
-		endpoint +=  "&tag=" . req.param['tag'];
+		endpoint +=  "&tag=" + req.param('tag');
 	}
+	
+	console.log(endpoint);
 	
 	request(endpoint, function (error, response, body) {
 	  if (!error && response.statusCode == 200) {
