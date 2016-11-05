@@ -25,12 +25,13 @@
 	  var socket = io();
 	  $('form').submit(function(){
 	    socket.emit('tag message', $('#m').val());
-		var sentMessage = '<li>Battle sent! ' + $('#m').val() + '</li>';
-		$('#messages').append(sentMessage);
 	    $('#m').val('');
 	    return false;
 	  });
 	  
+	  socket.on('tag message', function(msg){
+	      $('#messages').append($('<li>').text('New battle! ' + msg));
+	  });
 		
 	</script>
 	  
