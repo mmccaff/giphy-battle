@@ -3,7 +3,7 @@ Broadcast Giphy images to listeners using Socket.IO. This is just a prototype wr
 playing with Socket.IO and the Giphy API. To understand Socket.IO, the 'chat app' example provided on their web site is very
 helpful and similar to what is being done here.
 
-This is using Express.js with EJS for templating.
+This is using Express.js as the web framework with EJS for templating.
 
 # To install:
 1. Clone the repo
