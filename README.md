@@ -3,6 +3,10 @@ Broadcast Giphy images to listeners using Socket.IO. This is just a prototype wr
 playing with Socket.IO and the Giphy API. To understand Socket.IO, the 'chat app' example provided on their web site is very
 helpful and similar to what is being done here.
 
+This is useful at the office if you have a television mounted on the wall and would like different people to be able
+to remotely trigger changes of the Giphy displayed on the tv in realtime, without having to access the keyboard connected 
+to the television. 
+
 This is using Express.js as the web framework with EJS for templating.
 
 # To install:
@@ -30,10 +34,6 @@ Socket.IO, anyone viewing '/' will reload the window for the specified (or no) t
 a different random image. To test this, you can load http://localhost:3000/ and http://localhost:3000/battle and use the battle
 route to immediately change the image seen in the / route. You can also send a url to an image instead of a tag, and that will be 
 loaded as the img src via the url param.
-
-This is useful at the office if you have a television mounted on the wall and would like different people to be able
-to remotely trigger changes of the Giphy displayed on the tv in realtime, without having to access the keyboard connected 
-to the television. 
 
 # Future features:
 * Get a private api key from Giphy instead of using the rate-limited public key
