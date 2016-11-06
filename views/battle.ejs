@@ -18,6 +18,7 @@
     	<li>Send a tag (eg. cats) to load a new random image for that tag every ten minutes.</li>
 		<li>Or, send the url to an image (starting with http:// and ending in .gif, .jpg, or .png) to keep that image loaded.</li>
 		<li>Your image will be kicked off as soon as someone else sends a battle.</li>
+		<li>Use /up and /down to vote the current image up or down. A score less than -2 within 10 minutes will reload a new random 		image.</li>
     </ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
@@ -35,7 +36,7 @@
 	  });
 	  
 	  socket.on('tag message', function(msg){
-	      $('#messages').append($('<li>').text('New battle! ' + msg));
+	      $('#messages').append($('<li>').text(msg));
 	  });
 		
 	</script>

@@ -5,23 +5,69 @@
 		<style>
 			html, body{ width: 99%; height: 99%; overflow: hidden; }
 			img { width: 100%; height: 100%; }
+			.score { position: absolute; bottom: 20; left: 20; color: #fff; z-index: 99; -moz-border-radius}
+			.winning { color: green; padding-right: 2px; }
+			.losing { color: red; padding-right: 2px; }
+			.tied { color: #fff; padding-right: 2px; }
 		</style>
 
 	</head>
 	<body>
 		<img src="<%= imgUrl %>">
+		<div class="score tied" id="score">0</div>
 		
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 		
 		<script type="text/javascript">
-			var socket = io();
 		
+			var totalScore = 0;
+			
+			function getClassForScore(score)
+			{
+				if (score > 0)
+				{
+					return "winning";
+				} else if (score < 0) {
+					return "losing";
+				}
+				else {
+					return "tied";
+				}
+			}
+		
+			function voteUp()
+			{
+				totalScore++;
+				className = getClassForScore(totalScore);
+				$("#score").html('<span>' + totalScore + '</span>').removeClass('winning losing tied').addClass(className);
+			}
+			
+			function voteDown()
+			{
+				totalScore--;
+				className = getClassForScore(totalScore);
+				$("#score").html('<span>' + totalScore + '</span>').removeClass('winning losing tied').addClass(className);
+				
+				if (totalScore < -2)
+				{
+					window.location.href = '/';
+				}
+			}
+		
+			var socket = io();
+			
 	    	socket.on('tag message', function(msg){
-			  var re = new RegExp("^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jp?g|gif|png)$");
+			  var isImgUrl = new RegExp("^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jp?g|gif|png)$");
+			  var isVoteUp = new RegExp('^' + '/up\s*$', 'i');
+			  var isVoteDown = new RegExp('^' + '/down\s*$', 'i');
 			  
-			  if (re.test(msg)) {
+			  if (isImgUrl.test(msg)) {
 			      window.location.href = '/?url=' + msg;
+			  } else if (isVoteUp.test(msg)) {
+				  voteUp();
+			  } else if (isVoteDown.test(msg)) {
+				  voteDown();
 			  } else {
 			  	  window.location.href = '/?tag=' + msg;
 			  }
