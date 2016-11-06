@@ -18,7 +18,13 @@
 			var socket = io();
 		
 	    	socket.on('tag message', function(msg){
-	   	      window.location.href = '/?tag=' + msg;
+			  var re = new RegExp("^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jp?g|gif|png)$");
+			  
+			  if (re.test(msg)) {
+			      window.location.href = '/?url=' + msg;
+			  } else {
+			  	  window.location.href = '/?tag=' + msg;
+			  }
 	   	    });
 			
 			setTimeout(function(){

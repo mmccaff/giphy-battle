@@ -8,8 +8,17 @@ app.set('view engine', 'ejs');
 
 app.get('/', function(req, res){
 
+	// use specified url param as img src
+	if (req.param('url'))
+	{
+		var imgUrl = req.param('url');
+		return res.render('index', {imgUrl: imgUrl});
+	}
+	
+	// get random image from giphy
 	var endpoint = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC";
 	
+	// for a given tag
 	if (req.param('tag'))
 	{
 		endpoint +=  "&tag=" + req.param('tag');
@@ -22,11 +31,12 @@ app.get('/', function(req, res){
 		  var decoded = JSON.parse(body);
 		  var imgUrl = decoded.data.image_url;
 		  console.log(decoded.data.image_url);
-	  	  res.render('index', {imgUrl: imgUrl});
+	  	  return res.render('index', {imgUrl: imgUrl});
 	  }
 	});
 });
 
+// route to emit messages and battle
 app.get('/battle', function(req, res) {
 	 res.render('battle');
 });
