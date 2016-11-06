@@ -43,6 +43,7 @@ at /.
 * [done] Ability to broadcast a specific image in addition to a random image from a tag
 * Multi-tenant (channels) to support /[hash]/battle and /[hash] so different groups can have their own battles
 * [done] Ability to vote up/down, show # votes on image, and rotate off if > max number of downs (think turntable.fm)
+* Enforce voter fairness (right now anyone can vote as much as they want)
 * Ability to /say A message to overlay on an image
 * Consider queue instead of or in addition to real-time bumps
 * Store listening port in .env file (dotenv module?) instead of hardcoded 3000 and manually changing to 80 on prod
