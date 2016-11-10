@@ -13,11 +13,11 @@
 
 	</head>
 	<body>
-		<img src="<%= imgUrl %>">
+		<img id="displayedImage" src="<%= imgUrl %>">
 		<div class="score tied" id="score">0</div>
 		
 		<script src="/socket.io/socket.io.js"></script>
-		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="assets/js/jquery/jquery.js"></script>
 		
 		<script type="text/javascript">
 		
@@ -56,6 +56,14 @@
 			}
 		
 			var socket = io();
+			
+			socket.on('reload', function(msg) {
+				window.location.reload();
+			});
+			
+			socket.on('getsource', function(msg) {
+				socket.emit('gotsource', $("#displayedImage").attr('src'));
+			});
 			
 	    	socket.on('tag message', function(msg){
 			  var isImgUrl = new RegExp("^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jp?g|gif|png)$");

@@ -1,10 +1,17 @@
-var app = require('express')();
+var express = require('express')
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var request = require('request');
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var ObjectId = require('mongodb').ObjectID;
+var url = 'mongodb://localhost:27017/picroost';
+var path = require('path');
 
 app.engine('ejs', require('ejs').renderFile);
 app.set('view engine', 'ejs');
+app.use(express.static('public'));
 
 app.get('/', function(req, res){
 
@@ -12,7 +19,7 @@ app.get('/', function(req, res){
 	if (req.param('url'))
 	{
 		var imgUrl = req.param('url');
-		return res.render('index', {imgUrl: imgUrl});
+		return res.render('index', {imgUrl: imgUrl, messages: messages});
 	}
 	
 	// get random image from giphy
@@ -38,7 +45,21 @@ app.get('/', function(req, res){
 
 // route to emit messages and battle
 app.get('/battle', function(req, res) {
-	 res.render('battle');
+	
+	MongoClient.connect(url, function(err, db) {
+	  assert.equal(null, err);
+  
+	  var col = db.collection('messages');
+
+	  col.find({}).sort({ created_at: -1}).limit(50).toArray(function(err, docs) {
+	      assert.equal(null, err);
+	      db.close();
+		   
+		  //console.log(docs);
+		  return res.render('battle', { messages: docs.reverse()}); 
+	  });
+	});  
+	
 });
 
 io.on('connection', function(socket){
@@ -47,10 +68,39 @@ io.on('connection', function(socket){
   socket.on('disconnect', function(){
      console.log('user disconnected');
   });
+  
+  socket.on('reload', function(msg){
+	 console.log("reload");
+	 io.emit('reload', msg);
+   });
+   
+   socket.on('getsource', function(msg){
+ 	 console.log("getsource");
+ 	 io.emit('getsource', msg);
+    });
+	
+    socket.on('gotsource', function(msg){
+  	 console.log("gotsource");
+  	 io.emit('gotsource', msg);
+     });
    
   socket.on('tag message', function(msg){
      console.log('tag message: ' + msg);
 	 io.emit('tag message', msg);
+	 
+	 MongoClient.connect(url, function(err, db) {
+	   assert.equal(null, err);
+	   
+	   db.collection('messages').insertOne( {   
+	      		"message" : msg,
+	   			"created_at" : new Date()
+	      }, function(err, result) {
+	        assert.equal(err, null);
+		    db.close();
+	   });
+	  
+	 });
+	 
   });
 });
 
