@@ -62,6 +62,25 @@ app.get('/battle', function(req, res) {
 	
 });
 
+// route to emit messages and battle
+app.get('/favorites', function(req, res) {
+	
+	MongoClient.connect(url, function(err, db) {
+	  assert.equal(null, err);
+  
+	  var col = db.collection('favorites');
+
+	  col.find({}).sort({ created_at: -1}).limit(50).toArray(function(err, docs) {
+	      assert.equal(null, err);
+	      db.close();
+		   
+		  //console.log(docs);
+		  return res.render('favorites', { favorites: docs }); 
+	  });
+	});  
+	
+});
+
 io.on('connection', function(socket){
   console.log('a user connected');
   
@@ -82,6 +101,31 @@ io.on('connection', function(socket){
     socket.on('gotsource', function(msg){
   	 console.log("gotsource");
   	 io.emit('gotsource', msg);
+     });
+	 
+     socket.on('getfavorite', function(msg){
+   	 	console.log("getfavorite");
+   	 	io.emit('getfavorite', msg);
+     });
+	 
+     socket.on('gotfavorite', function(msg){
+   	 	console.log("gotfavorite");
+		
+	 // save the image url (msg) to the favorites collection if not already there
+   	 MongoClient.connect(url, function(err, db) {
+   	   assert.equal(null, err);
+	   
+   	   db.collection('favorites').update( 
+		   { "url" : msg },
+		   { $set: {"url": msg, 'created_at': new Date()} },
+		   { upsert: true },		
+   	      function(err, result) {
+   	        assert.equal(err, null);
+   		    db.close();
+   	   });
+   	 });
+		
+   	 	io.emit('gotfavorite', msg);
      });
    
   socket.on('tag message', function(msg){

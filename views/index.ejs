@@ -65,6 +65,10 @@
 				socket.emit('gotsource', $("#displayedImage").attr('src'));
 			});
 			
+			socket.on('getfavorite', function(msg) {
+				socket.emit('gotfavorite', $("#displayedImage").attr('src'));
+			});
+			
 	    	socket.on('tag message', function(msg){
 			  var isImgUrl = new RegExp("^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jp?g|gif|png)$");
 			  var isVoteUp = new RegExp('^' + '/up\s*$', 'i');

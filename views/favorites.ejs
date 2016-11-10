@@ -1,0 +1,14 @@
+<html>
+	<head>
+		<title>Favorites</title>
+	</head>
+	
+	<body>
+		<% favorites.forEach(function(favorite) { %>
+			<%= favorite.url %>
+			<br>
+			<img src="<%= favorite.url %>">
+			<hr>
+		<% }); %>
+	</body>
+</html>
