@@ -19,7 +19,7 @@ app.get('/', function(req, res){
 	if (req.param('url'))
 	{
 		var imgUrl = req.param('url');
-		return res.render('index', {imgUrl: imgUrl, messages: messages});
+		return res.render('index', {imgUrl: imgUrl});
 	}
 	
 	// get random image from giphy
