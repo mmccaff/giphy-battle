@@ -9,12 +9,34 @@
 			.winning { color: green; padding-right: 2px; }
 			.losing { color: red; padding-right: 2px; }
 			.tied { color: #fff; padding-right: 2px; }
+			
+			.meme {
+			    right: 50%;
+			    bottom: 50%;
+			    transform: translate(50%,50%);
+			    position: absolute;
+				font-family: impact;
+				font-size: 8em;
+				text-transform: uppercase;
+				color: white;
+				letter-spacing: 1px;
+				text-shadow:2px 2px 0 #000,
+				  -2px -2px 0 #000,
+				  2px -2px 0 #000,
+				  -2px 2px 0 #000,
+				  0px 2px 0 #000,
+				  2px 0px 0 #000,
+				  0px -2px 0 #000,
+				  -2px 0px 0 #000,
+				  2px 2px 5px #000;
+			}
 		</style>
 
 	</head>
 	<body>
 		<img id="displayedImage" src="<%= imgUrl %>">
 		<div class="score tied" id="score">0</div>
+		<div id="meme" class="meme"></div>
 		
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="assets/js/jquery/jquery.js"></script>
@@ -54,6 +76,12 @@
 					window.location.href = '/';
 				}
 			}
+			
+			function addMeme(msg) 
+			{
+				var splitMsg = msg.split("/say");
+				$("#meme").html(splitMsg[splitMsg.length-1]);
+			}
 		
 			var socket = io();
 			
@@ -73,6 +101,7 @@
 			  var isImgUrl = new RegExp("^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jp?g|gif|png)$");
 			  var isVoteUp = new RegExp('^' + '/up\s*$', 'i');
 			  var isVoteDown = new RegExp('^' + '/down\s*$', 'i');
+			  var isMeme = new RegExp('^' + '/say', 'i');
 			  
 			  if (isImgUrl.test(msg)) {
 			      window.location.href = '/?url=' + msg;
@@ -80,6 +109,8 @@
 				  voteUp();
 			  } else if (isVoteDown.test(msg)) {
 				  voteDown();
+			  } else if (isMeme.test(msg)) {
+			  	  addMeme(msg);
 			  } else {
 			  	  window.location.href = '/?tag=' + msg;
 			  }
