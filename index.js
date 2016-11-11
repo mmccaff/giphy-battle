@@ -62,7 +62,7 @@ app.get('/battle', function(req, res) {
 	
 });
 
-// route to emit messages and battle
+// route to view favorites
 app.get('/favorites', function(req, res) {
 	
 	MongoClient.connect(url, function(err, db) {
@@ -70,7 +70,7 @@ app.get('/favorites', function(req, res) {
   
 	  var col = db.collection('favorites');
 
-	  col.find({}).sort({ created_at: -1}).limit(50).toArray(function(err, docs) {
+	  col.find({}).sort({ created_at: -1}).toArray(function(err, docs) {
 	      assert.equal(null, err);
 	      db.close();
 		   
@@ -78,8 +78,25 @@ app.get('/favorites', function(req, res) {
 		  return res.render('favorites', { favorites: docs }); 
 	  });
 	});  
-	
 });
+
+// route to delete a favorite by id
+app.get('/favorites/delete/:id', function(req, res) {
+	
+	MongoClient.connect(url, function(err, db) {
+	  assert.equal(null, err);
+  
+	  var col = db.collection('favorites');
+
+	  col.remove({_id: ObjectId(req.params.id) }, function(err, docs) {
+	      assert.equal(null, err);
+	      db.close();
+		   
+		  return res.redirect('/favorites');
+	  });
+	});  
+});
+
 
 io.on('connection', function(socket){
   console.log('a user connected');
