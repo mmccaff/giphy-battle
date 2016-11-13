@@ -39,4 +39,4 @@ Rudimentary voting is implemented with /up and /down commands which increase or 
 A score < -2 within a 10 minute period will reload a random image at /.
 
 # Future features, bugs, etc:
-* Have been moved to [Issues](https://github.com/mmccaff/giphy-battle/issues) Issues and [Project](https://github.com/mmccaff/giphy-battle/projects) in Github
+* Have been moved to [Issues](https://github.com/mmccaff/giphy-battle/issues) and [Project](https://github.com/mmccaff/giphy-battle/projects) in Github
