@@ -13,8 +13,11 @@ app.engine('ejs', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
-app.get('/', function(req, res){
+/*
+* Route handlers
+*/
 
+var television = function(req, res) {
 	// use specified url param as img src
 	if (req.param('url'))
 	{
@@ -41,11 +44,9 @@ app.get('/', function(req, res){
 	  	  return res.render('index', {imgUrl: imgUrl});
 	  }
 	});
-});
+};
 
-// route to emit messages and battle
-app.get('/battle', function(req, res) {
-	
+var battle = function (req, res) {
 	MongoClient.connect(url, function(err, db) {
 	  assert.equal(null, err);
   
@@ -59,12 +60,9 @@ app.get('/battle', function(req, res) {
 		  return res.render('battle', { messages: docs.reverse()}); 
 	  });
 	});  
-	
-});
+};
 
-// route to view favorites
-app.get('/favorites', function(req, res) {
-	
+var favorites = function (req, res) {
 	MongoClient.connect(url, function(err, db) {
 	  assert.equal(null, err);
   
@@ -77,12 +75,10 @@ app.get('/favorites', function(req, res) {
 		  //console.log(docs);
 		  return res.render('favorites', { favorites: docs }); 
 	  });
-	});  
-});
+	}); 
+};
 
-// route to delete a favorite by id
-app.get('/favorites/delete/:id', function(req, res) {
-	
+var deleteFavorite = function (req, res) {
 	MongoClient.connect(url, function(err, db) {
 	  assert.equal(null, err);
   
@@ -95,8 +91,28 @@ app.get('/favorites/delete/:id', function(req, res) {
 		  return res.redirect('/favorites');
 	  });
 	});  
-});
+};
 
+/*
+* Routes
+*/
+
+// implied main channel
+app.get('/battle', battle);
+app.get('/favorites', favorites);
+app.get('/favorites/delete/:id', deleteFavorite);
+app.get('/', television);
+
+// user specified channel - unsupported until socket emits change to specify current channel
+app.get('/:channel', television);
+app.get('/:channel/battle', battle);
+app.get('/:channel/favorites', favorites);
+app.get('/:channel/favorites/delete/:id', deleteFavorite);
+
+
+/*
+* Socket.io listeners
+*/
 
 io.on('connection', function(socket){
   console.log('a user connected');
@@ -164,6 +180,10 @@ io.on('connection', function(socket){
 	 
   });
 });
+
+/*
+* Http server
+*/
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
