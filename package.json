@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "may the best giphy win",
   "dependencies": {
+    "dotenv": "^2.0.0",
     "ejs": "^2.5.2",
     "express": "^4.10.2",
     "mongodb": "^2.2.11",

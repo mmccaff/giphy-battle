@@ -1,3 +1,4 @@
+var dotenv = require('dotenv').config();
 var express = require('express')
 var app = express();
 var http = require('http').Server(app);
@@ -6,7 +7,6 @@ var request = require('request');
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
-var url = 'mongodb://localhost:27017/picroost';
 var path = require('path');
 
 app.engine('ejs', require('ejs').renderFile);
@@ -47,7 +47,7 @@ var television = function(req, res) {
 };
 
 var battle = function (req, res) {
-	MongoClient.connect(url, function(err, db) {
+	MongoClient.connect(process.env.MONGO_URL, function(err, db) {
 	  assert.equal(null, err);
   
 	  var col = db.collection('messages');
@@ -63,7 +63,7 @@ var battle = function (req, res) {
 };
 
 var favorites = function (req, res) {
-	MongoClient.connect(url, function(err, db) {
+	MongoClient.connect(process.env.MONGO_URL, function(err, db) {
 	  assert.equal(null, err);
   
 	  var col = db.collection('favorites');
@@ -79,7 +79,7 @@ var favorites = function (req, res) {
 };
 
 var deleteFavorite = function (req, res) {
-	MongoClient.connect(url, function(err, db) {
+	MongoClient.connect(process.env.MONGO_URL, function(err, db) {
 	  assert.equal(null, err);
   
 	  var col = db.collection('favorites');
@@ -145,7 +145,7 @@ io.on('connection', function(socket){
    	 	console.log("gotfavorite");
 		
 	 // save the image url (msg) to the favorites collection if not already there
-   	 MongoClient.connect(url, function(err, db) {
+   	 MongoClient.connect(process.env.MONGO_URL, function(err, db) {
    	   assert.equal(null, err);
 	   
    	   db.collection('favorites').update( 
@@ -165,7 +165,7 @@ io.on('connection', function(socket){
      console.log('tag message: ' + msg);
 	 io.emit('tag message', msg);
 	 
-	 MongoClient.connect(url, function(err, db) {
+	 MongoClient.connect(process.env.MONGO_URL, function(err, db) {
 	   assert.equal(null, err);
 	   
 	   db.collection('messages').insertOne( {   
@@ -185,6 +185,6 @@ io.on('connection', function(socket){
 * Http server
 */
 
-http.listen(3000, function(){
-  console.log('listening on *:3000');
+http.listen(process.env.HTTP_PORT, function(){
+  console.log('listening on *:' + process.env.HTTP_PORT);
 });
