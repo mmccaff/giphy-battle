@@ -21,8 +21,6 @@ var getCurrentRoom = function(req)
 {
 	var room = (req.params.room !== undefined) ? req.params.room : 'main';
 	
-	console.log(room);
-	
 	return room;
 }
 
