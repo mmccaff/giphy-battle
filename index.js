@@ -14,6 +14,17 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
 /*
+* Helper functions
+*/
+
+var getCurrentRoom = function(req)
+{
+	var room = (req.param('room') !== undefined) ? req.param('room') : 'main';
+	
+	return room;
+}
+
+/*
 * Route handlers
 */
 
@@ -26,7 +37,7 @@ var television = function(req, res) {
 	}
 	
 	// get random image from giphy
-	var endpoint = "http://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC";
+	var endpoint = "http://api.giphy.com/v1/gifs/random?api_key=" + process.env.GIPHY_API_KEY;
 	
 	// for a given tag
 	if (req.param('tag'))
@@ -41,7 +52,7 @@ var television = function(req, res) {
 		  var decoded = JSON.parse(body);
 		  var imgUrl = decoded.data.image_url;
 		  console.log(decoded.data.image_url);
-	  	  return res.render('index', {imgUrl: imgUrl});
+	  	  return res.render('index', {imgUrl: imgUrl, room: getCurrentRoom(req) });
 	  }
 	});
 };
@@ -57,7 +68,7 @@ var battle = function (req, res) {
 	      db.close();
 		   
 		  //console.log(docs);
-		  return res.render('battle', { messages: docs.reverse()}); 
+		  return res.render('battle', { messages: docs.reverse(), room: getCurrentRoom(req) }); 
 	  });
 	});  
 };
@@ -73,7 +84,7 @@ var favorites = function (req, res) {
 	      db.close();
 		   
 		  //console.log(docs);
-		  return res.render('favorites', { favorites: docs }); 
+		  return res.render('favorites', { favorites: docs, room: getCurrentRoom(req) }); 
 	  });
 	}); 
 };
@@ -103,11 +114,11 @@ app.get('/favorites', favorites);
 app.get('/favorites/delete/:id', deleteFavorite);
 app.get('/', television);
 
-// user specified channel - unsupported until socket emits change to specify current channel
-app.get('/:channel', television);
-app.get('/:channel/battle', battle);
-app.get('/:channel/favorites', favorites);
-app.get('/:channel/favorites/delete/:id', deleteFavorite);
+// user specified room - unsupported until socket emits change to specify current room
+app.get('/:room', television);
+app.get('/:room/battle', battle);
+app.get('/:room/favorites', favorites);
+app.get('/:room/favorites/delete/:id', deleteFavorite);
 
 
 /*

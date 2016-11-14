@@ -1,2 +1,3 @@
 HTTP_PORT=3000
 MONGO_URL=mongodb://localhost:27017/picroost
+GIPHY_API_KEY=dc6zaTOxFJmzC
