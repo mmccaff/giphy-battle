@@ -19,7 +19,9 @@ app.use(express.static('public'));
 
 var getCurrentRoom = function(req)
 {
-	var room = (req.param('room') !== undefined) ? req.param('room') : 'main';
+	var room = (req.params.room !== undefined) ? req.params.room : 'main';
+	
+	console.log(room);
 	
 	return room;
 }
@@ -29,10 +31,11 @@ var getCurrentRoom = function(req)
 */
 
 var television = function(req, res) {
+	
 	// use specified url param as img src
-	if (req.param('url'))
+	if (req.query['url'])
 	{
-		var imgUrl = req.param('url');
+		var imgUrl = req.query['url'];
 		return res.render('index', {imgUrl: imgUrl});
 	}
 	
@@ -40,9 +43,9 @@ var television = function(req, res) {
 	var endpoint = "http://api.giphy.com/v1/gifs/random?api_key=" + process.env.GIPHY_API_KEY;
 	
 	// for a given tag
-	if (req.param('tag'))
+	if (req.query['tag'])
 	{
-		endpoint +=  "&tag=" + req.param('tag');
+		endpoint +=  "&tag=" + req.query['tag'];
 	}
 	
 	console.log(endpoint);
