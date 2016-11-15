@@ -1,7 +1,6 @@
 # giphy-battle
 Broadcast Giphy images to listeners using Socket.IO. This is just a prototype written during morning coffee to demonstrate
-playing with Socket.IO and the Giphy API. To understand Socket.IO, the 'chat app' example provided on their web site is very
-helpful and similar to what is being done here.
+playing with Socket.IO and the Giphy API. 
 
 This is useful at the office if you have a television mounted on the wall and would like different people to be able
 to remotely trigger changes of the Giphy displayed on the tv in realtime, without having to access the keyboard connected 
