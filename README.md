@@ -40,7 +40,8 @@ a different random image. To test this, you can load http://localhost:3000/ and 
 route to immediately change the image seen in the / route. You can also send a url to an image instead of a tag, and that will be 
 loaded as the img src via the url param. Hitting ENTER will reload the current tag. A /s command will show you the current img src.
 Rudimentary voting is implemented with /up and /down commands which increase or decrease the # of total votes show on the bottom right of the image. 
-A score < -2 within a 10 minute period will reload a random image at /.
+A score < -2 within a 10 minute period will reload a random image at /. Images can be favorited with /favorite and meme text can be overlaid with
+/say meme text.
 
 # Future features, bugs, etc:
 * Have been moved to [Issues](https://github.com/mmccaff/giphy-battle/issues) and [Project](https://github.com/mmccaff/giphy-battle/projects) in Github
