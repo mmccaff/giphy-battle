@@ -25,6 +25,10 @@ There are a few routes:
 * /?tag=cats
 * /?url=http://www.url.to/giphy.gif
 * /battle
+* /favorites
+
+The above operates on a 'main' or 'general' room (channel) but ad hoc, private rooms can emerge by preceding with a room name. For example,
+/mycompany, /mycompany/battle, /mycompany/favorites to have a room that is only for 'mycompany' and not seen by other rooms.
 
 When the / route is loaded it initially displays a random image from Giphy and sizes it to take up the entire window. If
 a tag parameter is provided, it will display a random image that has that tag. The page reloads every ten minutes with a
