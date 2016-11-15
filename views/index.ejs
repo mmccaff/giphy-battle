@@ -87,16 +87,20 @@
 		
 			var socket = io();
 			
+	  	  	socket.on('connect', function() {
+	  	  		socket.emit('room', '<%= room %>');
+	  	  	});
+			
 			socket.on('reload', function(msg) {
 				window.location.reload();
 			});
 			
 			socket.on('getsource', function(msg) {
-				socket.emit('gotsource', $("#displayedImage").attr('src'));
+				socket.emit('gotsource', { "text": $("#displayedImage").attr('src'), "room": '<%= room %>' } );
 			});
 			
 			socket.on('getfavorite', function(msg) {
-				socket.emit('gotfavorite', $("#displayedImage").attr('src'));
+				socket.emit('gotfavorite', { "text": $("#displayedImage").attr('src'), "room": '<%= room %>' } );
 			});
 			
 	    	socket.on('tag message', function(msg){
@@ -105,16 +109,16 @@
 			  var isVoteDown = new RegExp('^' + '/down\s*$', 'i');
 			  var isMeme = new RegExp('^' + '/say', 'i');
 			  
-			  if (isImgUrl.test(msg)) {
-			      window.location.href = '/?url=' + msg;
-			  } else if (isVoteUp.test(msg)) {
+			  if (isImgUrl.test(msg.text)) {
+			      window.location.href = '/<%= room %>/?url=' + msg.text;
+			  } else if (isVoteUp.test(msg.text)) {
 				  voteUp();
-			  } else if (isVoteDown.test(msg)) {
+			  } else if (isVoteDown.test(msg.text)) {
 				  voteDown();
-			  } else if (isMeme.test(msg)) {
-			  	  addMeme(msg);
+			  } else if (isMeme.test(msg.text)) {
+			  	  addMeme(msg.text);
 			  } else {
-			  	  window.location.href = '/?tag=' + msg;
+			  	  window.location.href = '/<%= room %>/?tag=' + msg.text;
 			  }
 	   	    });
 			

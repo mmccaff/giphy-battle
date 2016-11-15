@@ -23,7 +23,7 @@
 			Or, send a url directly to an image (starting with http:// and ending in .gif, .jpg, or .png) to keep that image loaded.
 			Your image will be kicked off as soon as someone else sends a battle.<br><br>
 			Use /up and /down to vote the current image up or down. A score of less than -2 within 10 minutes will reload a new random image.<br>
-			Use /s to see the source location of the current image. /favorite to add current image to <a href="/favorites" target="_blank">favorites</a>. <br>
+			Use /s to see the source location of the current image. /favorite to add current image to <a href="/<%= room %>/favorites" target="_blank">favorites</a>. <br>
 			Use /say a message to overlay "a message" text onto the image like a meme.
 	</div>
 	  
@@ -51,44 +51,48 @@
 	   
   	  $('form').submit(function(){
 		  
-		  var message = $('#m').val();
+		  var message = { text: $('#m').val(), room: '<%= room %>' };
 		  
-		  if (message)
+		  if (message.text)
 		  {
-			  if (message == '/s')
+			  if (message.text == '/s')
 			  {
 			  	socket.emit('getsource', message);
 			  }
-			  else if (message == '/favorite')
+			  else if (message.text == '/favorite')
 			  {
 			  	socket.emit('getfavorite', message);
 			  }
 			  else
 			  {
-			  	socket.emit('tag message', message);
+				socket.emit('tag message', message);
 			  }
 		  }
 		  else
 		  {
-			  socket.emit('reload', 'forced reload');
+			  socket.emit('reload', {"text": 'forced reload', "room": message.room});
 		  }
   	   
   	    $('#m').val('').focus();
   	    return false;
   	  });
 	  
+	  socket.on('connect', function() {
+	  	socket.emit('room', '<%= room %>');
+	  });
+	  
   	  socket.on('tag message', function(msg){
-  	      $('#messages').append($('<li>').text(msg));
+  	      $('#messages').append($('<li>').text(msg.text));
 		  $("html, body").animate({ scrollTop: $(document).height() }, "fast");
   	  });
 	  
   	  socket.on('gotsource', function(msg){
-  	      $('#messages').append($('<li>').text(msg));
+  	      $('#messages').append($('<li>').text(msg.text));
 		  $("html, body").animate({ scrollTop: $(document).height() }, "fast");
   	  });
 	  
   	  socket.on('gotfavorite', function(msg){
-  	      $('#messages').append($('<li>').text('Favorited: ' + msg));
+  	      $('#messages').append($('<li>').text('Favorited: ' + msg.text));
 		  $("html, body").animate({ scrollTop: $(document).height() }, "fast");
   	  });
 	  

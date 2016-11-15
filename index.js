@@ -34,7 +34,7 @@ var television = function(req, res) {
 	if (req.query['url'])
 	{
 		var imgUrl = req.query['url'];
-		return res.render('index', {imgUrl: imgUrl});
+		return res.render('index', { imgUrl: imgUrl, room: getCurrentRoom(req) });
 	}
 	
 	// get random image from giphy
@@ -64,7 +64,7 @@ var battle = function (req, res) {
   
 	  var col = db.collection('messages');
 
-	  col.find({}).sort({ created_at: -1}).limit(50).toArray(function(err, docs) {
+	  col.find({"room": getCurrentRoom(req) }).sort({ created_at: -1}).limit(50).toArray(function(err, docs) {
 	      assert.equal(null, err);
 	      db.close();
 		   
@@ -80,7 +80,7 @@ var favorites = function (req, res) {
   
 	  var col = db.collection('favorites');
 
-	  col.find({}).sort({ created_at: -1}).toArray(function(err, docs) {
+	  col.find({"room": getCurrentRoom(req) }).sort({ created_at: -1}).toArray(function(err, docs) {
 	      assert.equal(null, err);
 	      db.close();
 		   
@@ -100,7 +100,7 @@ var deleteFavorite = function (req, res) {
 	      assert.equal(null, err);
 	      db.close();
 		   
-		  return res.redirect('/favorites');
+		  return res.redirect('/' + getCurrentRoom(req) + '/favorites');
 	  });
 	});  
 };
@@ -129,68 +129,74 @@ app.get('/:room/favorites/delete/:id', deleteFavorite);
 io.on('connection', function(socket){
   console.log('a user connected');
   
+  socket.on('room', function(room) {
+  	socket.join(room);
+  	console.log('joined room ' + room);
+  });
+  
   socket.on('disconnect', function(){
      console.log('user disconnected');
   });
   
   socket.on('reload', function(msg){
 	 console.log("reload");
-	 io.emit('reload', msg);
+	 io.to(msg.room).emit('reload', { text: msg.text, room: msg.room });
    });
    
    socket.on('getsource', function(msg){
  	 console.log("getsource");
- 	 io.emit('getsource', msg);
+ 	 io.to(msg.room).emit('getsource', { text: msg.text, room: msg.room });
     });
 	
     socket.on('gotsource', function(msg){
   	 console.log("gotsource");
-  	 io.emit('gotsource', msg);
+  	 io.to(msg.room).emit('gotsource', { text: msg.text, room: msg.room });
      });
 	 
      socket.on('getfavorite', function(msg){
    	 	console.log("getfavorite");
-   	 	io.emit('getfavorite', msg);
+   	 	io.to(msg.room).emit('getfavorite', { text: msg.text, room: msg.room } );
      });
 	 
      socket.on('gotfavorite', function(msg){
    	 	console.log("gotfavorite");
 		
-	 // save the image url (msg) to the favorites collection if not already there
-   	 MongoClient.connect(process.env.MONGO_URL, function(err, db) {
-   	   assert.equal(null, err);
+		 // save the image url (msg) to the favorites collection if not already there
+	   	 MongoClient.connect(process.env.MONGO_URL, function(err, db) {
+	   	   assert.equal(null, err);
 	   
-   	   db.collection('favorites').update( 
-		   { "url" : msg },
-		   { $set: {"url": msg, 'created_at': new Date()} },
-		   { upsert: true },		
-   	      function(err, result) {
-   	        assert.equal(err, null);
-   		    db.close();
-   	   });
-   	 });
+	   	   db.collection('favorites').update( 
+			   { "url" : msg.text, "room": msg.room },
+			   { $set: {"url": msg.text, 'created_at': new Date(), "room": msg.room } },
+			   { upsert: true },		
+	   	      function(err, result) {
+	   	        assert.equal(err, null);
+	   		    db.close();
+	   	   });
+	   	 });
 		
-   	 	io.emit('gotfavorite', msg);
+   	 	io.to(msg.room).emit('gotfavorite', { text: msg.text, room: msg.room } );
      });
    
   socket.on('tag message', function(msg){
-     console.log('tag message: ' + msg);
-	 io.emit('tag message', msg);
+     console.log('tag message: ' + msg.text + ' in ' + msg.room);
+	 io.to(msg.room).emit('tag message', { "text": msg.text, "room": msg.room } );
 	 
 	 MongoClient.connect(process.env.MONGO_URL, function(err, db) {
 	   assert.equal(null, err);
 	   
 	   db.collection('messages').insertOne( {   
-	      		"message" : msg,
+	      		"message" : msg.text,
+		   		"room": msg.room,
 	   			"created_at" : new Date()
 	      }, function(err, result) {
 	        assert.equal(err, null);
 		    db.close();
 	   });
 	  
-	 });
-	 
+	 }); 
   });
+  
 });
 
 /*
@@ -200,3 +206,4 @@ io.on('connection', function(socket){
 http.listen(process.env.HTTP_PORT, function(){
   console.log('listening on *:' + process.env.HTTP_PORT);
 });
+

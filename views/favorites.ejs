@@ -7,7 +7,7 @@
 	<body>
 		<% favorites.forEach(function(favorite) { %>
 			<%= favorite.url %> - 
-				<a href="/favorites/delete/<%= favorite._id %> ">remove from favorites</a> &nbsp; &nbsp;
+				<a href="/<%= room %>/favorites/delete/<%= favorite._id %> ">remove from favorites</a> &nbsp; &nbsp;
 				<a href="javascript: void(0);" data-url="<%= favorite.url %>" class="emit">send as battle</a>
 			<br>
 			<img src="<%= favorite.url %>">
@@ -20,11 +20,15 @@
 	
 			$(document).ready(function() {
 	  	  	  var socket = io();
+			  
+	  	  	  socket.on('connect', function() {
+	  	  	  	socket.emit('room', '<%= room %>');
+	  	  	  });
 	  	
 			  $(".emit").on("click", function() {
 				  var url = $(this).attr('data-url');
 				  
-				  socket.emit('tag message', url);
+				  socket.emit('tag message', { "text": url, "room": '<%= room %>' });
 				  alert('sent it!');
 			  });
 			  
