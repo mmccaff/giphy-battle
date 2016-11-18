@@ -13,12 +13,10 @@
 			.tied { color: #fff; padding-right: 2px; }
 			
 			.meme {
-			    right: 50%;
-			    bottom: 50%;
-			    transform: translate(50%,50%);
 			    position: absolute;
+				white-space: nowrap;
 				font-family: impact, 'Anton', sans-serif;
-				font-size: 8em;
+				font-size: 8vw;
 				text-transform: uppercase;
 				color: white;
 				letter-spacing: 1px;
@@ -32,13 +30,34 @@
 				  -2px 0px 0 #000,
 				  2px 2px 5px #000;
 			}
+			
+			.meme.top {
+			    right: 50%;
+				top: 0;
+			    transform: translate(50%,0%);
+			}
+			
+			.meme.middle {
+			    right: 50%;
+			    bottom: 50%;
+			    transform: translate(50%,50%);
+			}
+			
+			.meme.bottom {
+			    right: 50%;
+			    bottom: 0;
+			    transform: translate(50%,0%);
+			}
+			
 		</style>
 
 	</head>
 	<body>
 		<img id="displayedImage" src="<%= imgUrl %>">
 		<div class="score tied" id="score">0</div>
-		<div id="meme" class="meme"></div>
+		<div id="memetop" class="meme top"></div>
+		<div id="mememiddle" class="meme middle"></div>
+		<div id="memebottom" class="meme bottom"></div>
 		
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/assets/js/jquery/jquery.js"></script>
@@ -79,10 +98,24 @@
 				}
 			}
 			
-			function addMeme(msg) 
+			function addMeme(msg, divId) 
 			{
-				var splitMsg = msg.split("/say");
-				$("#meme").html(splitMsg[splitMsg.length-1]);
+				var splitMsg;
+				
+				if (msg.includes("/saytop"))
+				{
+					splitMsg = msg.split("/saytop");
+				}
+				else if (msg.includes("/saybottom"))
+				{
+					splitMsg = msg.split("/saybottom");
+				}
+				else
+				{
+					splitMsg = msg.split("/say");
+				}
+				
+				$(divId).html(splitMsg[splitMsg.length-1]);
 			}
 		
 			var socket = io();
@@ -107,7 +140,9 @@
 			  var isImgUrl = new RegExp("^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jp?g|gif|png)$");
 			  var isVoteUp = new RegExp('^' + '/up\s*$', 'i');
 			  var isVoteDown = new RegExp('^' + '/down\s*$', 'i');
-			  var isMeme = new RegExp('^' + '/say', 'i');
+			  var isMemeMiddle = new RegExp('^' + '/say', 'i');
+			  var isMemeTop = new RegExp('^' + '/saytop', 'i');
+			  var isMemeBottom = new RegExp('^' + '/saybottom', 'i');
 			  
 			  if (isImgUrl.test(msg.text)) {
 			      window.location.href = '/<%= room %>/?url=' + msg.text;
@@ -115,8 +150,12 @@
 				  voteUp();
 			  } else if (isVoteDown.test(msg.text)) {
 				  voteDown();
-			  } else if (isMeme.test(msg.text)) {
-			  	  addMeme(msg.text);
+			  } else if (isMemeTop.test(msg.text)) {
+				   addMeme(msg.text, '#memetop');
+			  } else if (isMemeBottom.test(msg.text)) {
+				   addMeme(msg.text, '#memebottom');
+			  } else if (isMemeMiddle.test(msg.text)) {
+			  	  addMeme(msg.text, '#mememiddle');
 			  } else {
 			  	  window.location.href = '/<%= room %>/?tag=' + msg.text;
 			  }
