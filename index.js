@@ -28,6 +28,28 @@ var getCurrentRoom = function(req)
 * Route handlers
 */
 
+var rooms = function(req, res) {
+	MongoClient.connect(process.env.MONGO_URL, function(err, db) {
+	  assert.equal(null, err);
+  
+	  var col = db.collection('messages');
+
+	  // consider using aggregation pipeline instead of distinct to get counts of messages in results
+	  col.distinct("room", function (err, docs) {
+	      assert.equal(null, err);
+	      db.close();
+		   
+		  // case insensitive sort
+		  docs.sort(function (a, b) {
+		      return a.toLowerCase().localeCompare(b.toLowerCase());
+		  });
+		     
+		  return res.render('rooms', { rooms: docs }); 
+	  });
+	  
+	}); 
+}
+
 var television = function(req, res) {
 	
 	// use specified url param as img src
@@ -112,6 +134,7 @@ var deleteFavorite = function (req, res) {
 // implied main channel
 app.get('/battle', battle);
 app.get('/favorites', favorites);
+app.get('/rooms', rooms);
 app.get('/favorites/delete/:id', deleteFavorite);
 app.get('/', television);
 
