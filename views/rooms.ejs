@@ -1,0 +1,16 @@
+<html>
+	<head>
+		<title>Rooms</title>
+		<link rel="shortcut icon" href="/assets/images/favicon.png" />
+	</head>
+	
+	<body>
+		<h2>Rooms</h2>
+		
+		<ul>
+			<% rooms.forEach(function(room) { %>
+				<li><a href="/<%= room %>/battle"><%= room %></a></li>
+			<% }); %>
+		</ul>
+	</body>
+</html>
