@@ -65,6 +65,7 @@
 		<script type="text/javascript">
 		
 			var totalScore = 0;
+			var isPaused = 0;
 			
 			function getClassForScore(score)
 			{
@@ -140,6 +141,8 @@
 			  var isImgUrl = new RegExp("^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jp?g|gif|png)$");
 			  var isVoteUp = new RegExp('^' + '/up\s*$', 'i');
 			  var isVoteDown = new RegExp('^' + '/down\s*$', 'i');
+			  var isPause = new RegExp('^' + '/pause\s*$', 'i');
+			  var isUnPause = new RegExp('^' + '/unpause\s*$', 'i');
 			  var isMemeMiddle = new RegExp('^' + '/say', 'i');
 			  var isMemeTop = new RegExp('^' + '/saytop', 'i');
 			  var isMemeBottom = new RegExp('^' + '/saybottom', 'i');
@@ -150,10 +153,14 @@
 				  voteUp();
 			  } else if (isVoteDown.test(msg.text)) {
 				  voteDown();
+			  } else if (isPause.test(msg.text)) {
+				  isPaused = 1;
+			  } else if (isUnPause.test(msg.text)) {
+				  isPaused = 0;
 			  } else if (isMemeTop.test(msg.text)) {
-				   addMeme(msg.text, '#memetop');
+				  addMeme(msg.text, '#memetop');
 			  } else if (isMemeBottom.test(msg.text)) {
-				   addMeme(msg.text, '#memebottom');
+				  addMeme(msg.text, '#memebottom');
 			  } else if (isMemeMiddle.test(msg.text)) {
 			  	  addMeme(msg.text, '#mememiddle');
 			  } else {
@@ -161,8 +168,10 @@
 			  }
 	   	    });
 			
-			setTimeout(function(){
-		   	 	window.location.reload();
+			setInterval(function(){
+				if (isPaused == 0) {
+					window.location.reload();
+				}
 			}, 600000); // ten minutes
 			
 		</script>
