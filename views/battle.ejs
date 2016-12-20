@@ -25,8 +25,9 @@
 			Also, there might be some <a href="/rooms" target="_blank">other rooms</a> available besides this one.
 			<br><br>
 			Use /up and /down to vote the current image up or down. A score of less than -2 within 10 minutes will reload a new random image.<br>
-			Use /s to see the source location of the current image. /favorite to add current image to <a href="/<%= room %>/favorites" target="_blank">favorites</a>. <br>
-			Use /say a message to overlay "a message" text onto the image like a meme. Try, /saybottom and /saytop for different positioning.<br>
+			Use /show to see the current image and its source location. <br>
+			Use /favorite to add the current image to <a href="/<%= room %>/favorites" target="_blank">favorites</a>. <br>
+			Use /say a message to overlay "a message" text onto the image like a meme. Use /saybottom and /saytop for different positioning.<br>
 			Use /pause and /unpause to lock an image and meme text in place, or restore 10 minute refreshes.
 	</div>
 	  
@@ -58,7 +59,7 @@
 		  
 		  if (message.text)
 		  {
-			  if (message.text == '/s')
+			  if (message.text == '/show')
 			  {
 			  	socket.emit('getsource', message);
 			  }
@@ -90,7 +91,8 @@
   	  });
 	  
   	  socket.on('gotsource', function(msg){
-  	      $('#messages').append($('<li>').text(msg.text));
+		  $('#messages').append('<li><img src="' + msg.text + '"></li>');
+  	      $('#messages').append($('<li>').text('Location: ' + msg.text));
 		  $("html, body").animate({ scrollTop: $(document).height() }, "fast");
   	  });
 	  
