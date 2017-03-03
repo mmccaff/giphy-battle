@@ -61,6 +61,7 @@
 		
 		<script src="/socket.io/socket.io.js"></script>
 		<script src="/assets/js/jquery/jquery.js"></script>
+		<script src='/assets/js/responsivevoice/responsivevoice.js'></script>
 		
 		<script type="text/javascript">
 		
@@ -118,6 +119,13 @@
 				
 				$(divId).html(splitMsg[splitMsg.length-1]);
 			}
+			
+			function speak (msg) 
+			{
+				splitMsg = msg.split("/speak");
+				
+				responsiveVoice.speak(splitMsg[splitMsg.length-1]);
+			}
 		
 			var socket = io();
 			
@@ -146,6 +154,7 @@
 			  var isMemeMiddle = new RegExp('^' + '/say', 'i');
 			  var isMemeTop = new RegExp('^' + '/saytop', 'i');
 			  var isMemeBottom = new RegExp('^' + '/saybottom', 'i');
+			  var isSpeak = new RegExp('^' + '/speak', 'i');
 			  
 			  if (isImgUrl.test(msg.text)) {
 			      window.location.href = '/<%= room %>/?url=' + msg.text;
@@ -157,6 +166,8 @@
 				  isPaused = 1;
 			  } else if (isUnPause.test(msg.text)) {
 				  isPaused = 0;
+			  } else if (isSpeak.test(msg.text)) {
+				  speak(msg.text);
 			  } else if (isMemeTop.test(msg.text)) {
 				  addMeme(msg.text, '#memetop');
 			  } else if (isMemeBottom.test(msg.text)) {
