@@ -18,6 +18,43 @@ This is using Express.js as the web framework with EJS for templating. Data is p
 By default, the app listens on port 3000. Change if you'd like. 
 You can use something like 'forever' if you'd like to keep it running.
 
+# Example install on Ubuntu 20.04
+```
+sudo apt-get update
+ 
+wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+
+sudo apt-get install -y mongodb-org
+
+sudo systemctl start mongod
+
+sudo systemctl status mongod
+
+cd /home
+
+mkdir picroost
+
+cd picroost
+
+git clone https://github.com/mmccaff/giphy-battle.git .
+
+sudo apt install nodejs
+
+sudo apt install npm
+
+sudo npm install -g forever
+
+cp .sample_env .env
+
+vi .env
+
+npm install
+
+forever start index.js 
+```
+
 # How to use:
 There are a few routes:
 * /
