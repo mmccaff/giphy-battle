@@ -12,7 +12,7 @@ This is using Express.js as the web framework with EJS for templating. Data is p
 1. Clone the repo
 2. npm install
 3. Install mongodb
-4. cp .sample.env .env (and adjust HTTP_PORT and MONGO_URL if necessary) 
+4. cp .sample_env .env (and adjust HTTP_PORT and MONGO_URL if necessary) 
 5. node index.js
 
 By default, the app listens on port 3000. Change if you'd like. 
