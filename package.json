@@ -4,7 +4,7 @@
   "description": "may the best giphy win",
   "dependencies": {
     "dotenv": "^2.0.0",
-    "ejs": "^2.5.2",
+    "ejs": "^3.1.7",
     "express": "^4.10.2",
     "mongodb": ">=3.1.13",
     "request": "^2.78.0",
